@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماشین حساب ایتا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 15px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(to right, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px rgba(76, 201, 240, 0.3);
+        }
+
+        .header p {
+            color: #b8c1ec;
+            font-size: 1rem;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: scaleIn 0.8s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        .calculator:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            transform: translateY(-5px);
+        }
+
+        .display {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .history {
+            font-size: 1rem;
+            color: #b8c1ec;
+            min-height: 25px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: ltr;
+            text-align: right;
+            transition: all 0.3s ease;
+        }
+
+        .current-operation {
+            font-size: 2.5rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: ltr;
+            text-align: right;
+            transition: all 0.3s ease;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .btn {
+            height: 70px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .number {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .number:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .operator {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        }
+
+        .operator:hover {
+            background: linear-gradient(135deg, #3a0ca3, #4361ee);
+            transform: translateY(-3px);
+        }
+
+        .equals {
+            background: linear-gradient(135deg, #f72585, #b5179e);
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: linear-gradient(135deg, #b5179e, #f72585);
+            transform: translateY(-3px);
+        }
+
+        .clear, .delete {
+            background: linear-gradient(135deg, #ff9e00, #ff9100);
+        }
+
+        .clear:hover, .delete:hover {
+            background: linear-gradient(135deg, #ff9100, #ff9e00);
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #b8c1ec;
+            font-size: 1rem;
+            animation: fadeInUp 1s ease-out;
+            margin-top: 10px;
+        }
+
+        .footer a {
+            color: #4cc9f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 3px;
+        }
+
+        .footer a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            right: 0;
+            background-color: #4cc9f0;
+            transition: width 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #72efdd;
+        }
+
+        .footer a:hover::after {
+            width: 100%;
+        }
+
+        /* انیمیشن‌ها */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+
+        /* انیمیشن برای نمایش اعداد */
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .pop-animation {
+            animation: popIn 0.2s ease-out;
+        }
+
+        /* طراحی واکنش‌گرا */
+        @media (max-width: 500px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .calculator {
+                padding: 20px;
+            }
+            
+            .btn {
+                height: 65px;
+                font-size: 1.3rem;
+            }
+            
+            .current-operation {
+                font-size: 2.2rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .btn {
+                height: 60px;
+                font-size: 1.2rem;
+            }
+            
+            .buttons-grid {
+                gap: 12px;
+            }
+        }
+
+        /* استایل برای دکمه‌های فعال */
+        .active-operator {
+            background: linear-gradient(135deg, #7209b7, #560bad) !important;
+            box-shadow: 0 0 15px rgba(114, 9, 183, 0.5) !important;
+        }
+
+        /* استایل برای تاریخچه */
+        .history-item {
+            font-size: 0.9rem;
+            color: #a5b4fc;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            direction: ltr;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> ماشین حساب ایتا</h1>
+            <p>محاسباتت رو سریع و حرفه‌ای از طریق ایتا انجام بده.</p>
+        </div>
+        
+        <div class="calculator">
+            <div class="display">
+                <div class="history" id="history"></div>
+                <div class="current-operation" id="current">0</div>
+            </div>
+            
+            <div class="buttons-grid">
+                <button class="btn clear" data-action="clear">C</button>
+                <button class="btn delete" data-action="delete"><i class="fas fa-backspace"></i></button>
+                <button class="btn operator" data-action="percent">%</button>
+                <button class="btn operator" data-action="divide">/</button>
+                
+                <button class="btn number" data-number="7">7</button>
+                <button class="btn number" data-number="8">8</button>
+                <button class="btn number" data-number="9">9</button>
+                <button class="btn operator" data-action="multiply">×</button>
+                
+                <button class="btn number" data-number="4">4</button>
+                <button class="btn number" data-number="5">5</button>
+                <button class="btn number" data-number="6">6</button>
+                <button class="btn operator" data-action="subtract">-</button>
+                
+                <button class="btn number" data-number="1">1</button>
+                <button class="btn number" data-number="2">2</button>
+                <button class="btn number" data-number="3">3</button>
+                <button class="btn operator" data-action="add">+</button>
+                
+                <button class="btn number" data-number="0">0</button>
+                <button class="btn number" data-action="decimal">.</button>
+                <button class="btn equals" data-action="equals">=</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            ساخته شده توسط <a href="https://ehsanpg.ir" target="_blank">گروه برنامه نویسی احسان</a>
+        </div>
+    </div>
+
+    <script>
+        // متغیرهای ماشین حساب
+        let currentOperand = '0';
+        let previousOperand = '';
+        let operation = null;
+        let resetScreen = false;
+        let calculationHistory = [];
+
+        // المنت‌های DOM
+        const currentDisplay = document.getElementById('current');
+        const historyDisplay = document.getElementById('history');
+        const buttons = document.querySelectorAll('.btn');
+
+        // به‌روزرسانی نمایش
+        function updateDisplay() {
+            currentDisplay.textContent = formatDisplayNumber(currentOperand);
+            
+            if (operation != null) {
+                historyDisplay.textContent = `${formatDisplayNumber(previousOperand)} ${getOperationSymbol(operation)}`;
+            } else {
+                historyDisplay.textContent = '';
+            }
+            
+            // اضافه کردن انیمیشن به نمایش فعلی
+            currentDisplay.classList.remove('pop-animation');
+            void currentDisplay.offsetWidth; // بازنشانی انیمیشن
+            currentDisplay.classList.add('pop-animation');
+        }
+
+        // فرمت کردن عدد برای نمایش
+        function formatDisplayNumber(num) {
+            const strNum = num.toString();
+            if (strNum === '') return '0';
+            
+            // جدا کردن اعشار
+            const integerDigits = parseFloat(strNum.split('.')[0]);
+            const decimalDigits = strNum.split('.')[1];
+            
+            let integerDisplay;
+            
+            if (isNaN(integerDigits)) {
+                integerDisplay = '';
+            } else {
+                integerDisplay = integerDigits.toLocaleString('fa-IR', {
+                    maximumFractionDigits: 0,
+                });
+            }
+            
+            if (decimalDigits != null) {
+                return `${integerDisplay}.${decimalDigits}`;
+            } else {
+                return integerDisplay;
+            }
+        }
+
+        // دریافت نماد عملگر
+        function getOperationSymbol(op) {
+            switch(op) {
+                case 'add': return '+';
+                case 'subtract': return '−';
+                case 'multiply': return '×';
+                case 'divide': return '÷';
+                case 'percent': return '%';
+                default: return '';
+            }
+        }
+
+        // اضافه کردن عدد
+        function appendNumber(number) {
+            if (currentOperand === '0' || resetScreen) {
+                currentOperand = number;
+                resetScreen = false;
+            } else {
+                currentOperand += number;
+            }
+        }
+
+        // انتخاب عملگر
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            
+            if (previousOperand !== '') {
+                calculate();
+            }
+            
+            operation = op;
+            previousOperand = currentOperand;
+            resetScreen = true;
+            
+            // حذف کلاس active از همه عملگرها
+            document.querySelectorAll('.operator').forEach(btn => {
+                btn.classList.remove('active-operator');
+            });
+            
+            // اضافه کردن کلاس active به عملگر انتخاب شده
+            const activeOperator = document.querySelector(`[data-action="${op}"]`);
+            if (activeOperator) {
+                activeOperator.classList.add('active-operator');
+            }
+        }
+
+        // محاسبه
+        function calculate() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+            
+            switch(operation) {
+                case 'add':
+                    computation = prev + current;
+                    break;
+                case 'subtract':
+                    computation = prev - current;
+                    break;
+                case 'multiply':
+                    computation = prev * current;
+                    break;
+                case 'divide':
+                    if (current === 0) {
+                        alert("خطا: تقسیم بر صفر مجاز نیست!");
+                        clearCalculator();
+                        return;
+                    }
+                    computation = prev / current;
+                    break;
+                case 'percent':
+                    computation = prev * (current / 100);
+                    break;
+                default:
+                    return;
+            }
+            
+            // ذخیره در تاریخچه
+            const historyItem = {
+                expression: `${prev} ${getOperationSymbol(operation)} ${current}`,
+                result: computation
+            };
+            calculationHistory.unshift(historyItem);
+            updateHistoryDisplay();
+            
+            currentOperand = computation.toString();
+            operation = null;
+            previousOperand = '';
+            resetScreen = true;
+            
+            // حذف کلاس active از همه عملگرها
+            document.querySelectorAll('.operator').forEach(btn => {
+                btn.classList.remove('active-operator');
+            });
+        }
+
+        // به‌روزرسانی نمایش تاریخچه
+        function updateHistoryDisplay() {
+            // فقط 3 مورد آخر را نمایش می‌دهیم
+            const recentHistory = calculationHistory.slice(0, 3);
+            historyDisplay.innerHTML = recentHistory.map(item => 
+                `<div class="history-item">${item.expression} = ${formatDisplayNumber(item.result)}</div>`
+            ).join('');
+        }
+
+        // اعمال درصد
+        function applyPercentage() {
+            const current = parseFloat(currentOperand);
+            if (isNaN(current)) return;
+            
+            currentOperand = (current / 100).toString();
+            resetScreen = true;
+        }
+
+        // اضافه کردن اعشار
+        function addDecimalPoint() {
+            if (resetScreen) {
+                currentOperand = '0.';
+                resetScreen = false;
+                return;
+            }
+            
+            if (currentOperand.includes('.')) return;
+            
+            currentOperand += '.';
+        }
+
+        // پاک کردن ماشین حساب
+        function clearCalculator() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = null;
+            resetScreen = false;
+            
+            // حذف کلاس active از همه عملگرها
+            document.querySelectorAll('.operator').forEach(btn => {
+                btn.classList.remove('active-operator');
+            });
+        }
+
+        // حذف آخرین رقم
+        function deleteLastDigit() {
+            if (currentOperand.length === 1) {
+                currentOperand = '0';
+            } else {
+                currentOperand = currentOperand.slice(0, -1);
+            }
+        }
+
+        // مدیریت کلیک دکمه‌ها
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // افکت موجی روی دکمه
+                button.classList.add('clicked');
+                setTimeout(() => {
+                    button.classList.remove('clicked');
+                }, 300);
+                
+                if (button.hasAttribute('data-number')) {
+                    appendNumber(button.getAttribute('data-number'));
+                    updateDisplay();
+                }
+                
+                if (button.hasAttribute('data-action')) {
+                    const action = button.getAttribute('data-action');
+                    
+                    switch(action) {
+                        case 'clear':
+                            clearCalculator();
+                            break;
+                        case 'delete':
+                            deleteLastDigit();
+                            break;
+                        case 'equals':
+                            calculate();
+                            break;
+                        case 'decimal':
+                            addDecimalPoint();
+                            break;
+                        case 'percent':
+                            applyPercentage();
+                            break;
+                        default:
+                            chooseOperation(action);
+                            break;
+                    }
+                    
+                    updateDisplay();
+                }
+            });
+        });
+
+        // مدیریت صفحه کلید
+        document.addEventListener('keydown', event => {
+            if (event.key >= '0' && event.key <= '9') {
+                appendNumber(event.key);
+                updateDisplay();
+            }
+            
+            if (event.key === '.') {
+                addDecimalPoint();
+                updateDisplay();
+            }
+            
+            if (event.key === '+' || event.key === '-') {
+                chooseOperation(event.key === '+' ? 'add' : 'subtract');
+                updateDisplay();
+            }
+            
+            if (event.key === '*' || event.key === 'x') {
+                chooseOperation('multiply');
+                updateDisplay();
+            }
+            
+            if (event.key === '/') {
+                chooseOperation('divide');
+                updateDisplay();
+            }
+            
+            if (event.key === '%') {
+                applyPercentage();
+                updateDisplay();
+            }
+            
+            if (event.key === 'Enter' || event.key === '=') {
+                calculate();
+                updateDisplay();
+            }
+            
+            if (event.key === 'Escape' || event.key === 'Delete') {
+                clearCalculator();
+                updateDisplay();
+            }
+            
+            if (event.key === 'Backspace') {
+                deleteLastDigit();
+                updateDisplay();
+            }
+        });
+
+        // مقداردهی اولیه
+        updateDisplay();
+    </script>
+    <!-- SDK ایتا -->
+    <script src="https://developer.eitaa.com/eitaa-web-app.js"></script>
+    <script>
+
+    </script>
+</body>
+</html>
