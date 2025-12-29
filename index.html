@@ -356,7 +356,7 @@
                 <button class="btn clear" data-action="clear">C</button>
                 <button class="btn delete" data-action="delete"><i class="fas fa-backspace"></i></button>
                 <button class="btn operator" data-action="percent">%</button>
-                <button class="btn operator" data-action="divide">/</button>
+                <button class="btn operator" data-action="divide">÷</button>
                 
                 <button class="btn number" data-number="7">7</button>
                 <button class="btn number" data-number="8">8</button>
@@ -507,7 +507,8 @@
                     break;
                 case 'divide':
                     if (current === 0) {
-                        alert("خطا: تقسیم بر صفر مجاز نیست!");
+                        //alert("خطا: تقسیم بر صفر مجاز نیست!");
+                        showAlert( [callback])	
                         clearCalculator();
                         return;
                     }
