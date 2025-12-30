@@ -508,7 +508,8 @@
                 case 'divide':
                     if (current === 0) {
                         //alert("خطا: تقسیم بر صفر مجاز نیست!");
-                        showAlert( [callback])	
+                        EA.showAlert("خطا: تقسیم بر صفر مجاز نیست!");
+
                         clearCalculator();
                         return;
                     }
