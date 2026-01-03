@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ردیاب خواب — سبک، دقیق، حرفه‌ای</title>
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --surface: #121317;
+      --surface-2: #1a1c22;
+      --text: #e6e7ea;
+      --muted: #a6a9b3;
+      --primary: #6ea8fe;
+      --primary-2: #4c89f7;
+      --success: #58d68d;
+      --warning: #f5b041;
+      --danger: #ff6b6b;
+      --border: #2a2d36;
+      --shadow: 0 6px 24px rgba(0,0,0,0.35);
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f7fb;
+        --surface: #ffffff;
+        --surface-2: #f2f3f7;
+        --text: #1b1e24;
+        --muted: #596176;
+        --border: #e4e7ee;
+        --shadow: 0 4px 18px rgba(17, 24, 39, 0.08);
+      }
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 75% -100%, rgba(78,123,255,0.08), transparent 60%),
+                  radial-gradient(1000px 600px at -50% 0%, rgba(88,214,141,0.08), transparent 60%), var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "IranSans", "Vazirmatn", "Inter", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+    }
+    a { color: var(--primary); text-decoration: none }
+    .container {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .app {
+      background: linear-gradient(180deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(800px 300px at 20% -100%, rgba(110,168,254,0.25), transparent 60%),
+        radial-gradient(600px 300px at 120% -80%, rgba(88,214,141,0.18), transparent 60%),
+        var(--surface);
+    }
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: -0.3px;
+    }
+    .sub { color: var(--muted); font-size: 13px }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap }
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    button:hover { transform: translateY(-1px) }
+    button:active { transform: translateY(1px) }
+    .primary {
+      background: linear-gradient(180deg, var(--primary), var(--primary-2));
+      border: none;
+      color: white;
+      box-shadow: 0 8px 18px rgba(76,137,247,0.35);
+    }
+    .danger { border-color: rgba(255,107,107,0.35); color: #ff6b6b }
+    .success { border-color: rgba(88,214,141,0.35); color: var(--success) }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (max-width: 880px) { .grid { grid-template-columns: 1fr } }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .card h2 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+    .muted { color: var(--muted); font-size: 13px }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+    .field { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px }
+    label { font-size: 13px; color: var(--muted) }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      outline: none;
+    }
+    .list { display: grid; gap: 8px; margin-top: 12px }
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, var(--surface), var(--surface-2));
+    }
+    .item .meta { font-size: 12px; color: var(--muted) }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      color: white;
+    }
+    .score-good { background: linear-gradient(180deg, #45c67a, #58d68d) }
+    .score-mid { background: linear-gradient(180deg, #f0a54b, #f5b041) }
+    .score-bad { background: linear-gradient(180deg, #ff5c5c, #ff6b6b) }
+    .pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface-2);
+    }
+    .footer { border-top: 1px solid var(--border); padding: 12px 16px; display:flex; justify-content:space-between; color: var(--muted); font-size:12px }
+    /* Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; display: none; place-items: center;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(2px);
+      z-index: 50;
+    }
+    .modal {
+      width: min(560px, calc(100vw - 32px));
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .modal header { border-bottom: 1px solid var(--border) }
+    .modal .content { padding: 16px }
+    .modal .actions { padding: 12px 16px; border-top: 1px solid var(--border); display:flex; justify-content: flex-end; gap: 8px }
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      align-items: end;
+      margin-top: 10px;
+      height: 120px;
+    }
+    .bar {
+      border-radius: 10px 10px 4px 4px;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .bar .fill {
+      position: absolute; left: 0; bottom: 0; width: 100%;
+      border-radius: 10px;
+    }
+    .bar .label {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      bottom: -20px; font-size: 11px; color: var(--muted);
+    }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app" id="app">
+      <header>
+        <div>
+          <h1>ردیاب خواب</h1>
+          <div class="sub">ثبت، هدف‌گذاری، نمره‌دهی و گزارش هفتگی — ذخیره دائمی در مرورگر</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="sleepBtn">خوابیدم</button>
+          <button class="success" id="wakeBtn">بیدار شدم</button>
+          <button id="editBtn">ویرایش جلسه</button>
+          <button class="danger" id="resetBtn" title="پاکسازی داده‌ها (نیازمند تأیید)">بازنشانی</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="card" aria-labelledby="goals-title">
+          <h2 id="goals-title">هدف‌های خواب</h2>
+          <div class="muted">ساعت خواب و بیداری هدف + مدت خواب مطلوب</div>
+          <div class="field">
+            <div>
+              <label for="goalSleepTime">ساعت خواب هدف (HH:MM)</label>
+              <input id="goalSleepTime" type="time" />
+            </div>
+            <div>
+              <label for="goalWakeTime">ساعت بیداری هدف (HH:MM)</label>
+              <input id="goalWakeTime" type="time" />
+            </div>
+          </div>
+          <div class="field">
+            <div>
+              <label for="goalDuration">مدت خواب هدف (ساعت)</label>
+              <input id="goalDuration" type="number" step="0.25" min="0" placeholder="مثلاً 7.5" />
+            </div>
+            <div class="row" style="margin-top: 22px;">
+              <button id="saveGoals" class="primary">ذخیره هدف‌ها</button>
+              <span id="goalsInfo" class="pill">—</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="weekly-title">
+          <h2 id="weekly-title">گزارش هفتگی</h2>
+          <div class="row">
+            <div id="weeklyScoreBadge" class="score-badge score-mid"><span>میانگین هفته</span><strong id="weeklyScore">—</strong></div>
+            <span class="pill" id="weeklyRange">—</span>
+          </div>
+          <div class="chart" id="weeklyChart" aria-hidden="true"></div>
+          <div class="muted">رنگ سبز عملکرد خوب، نارنجی متوسط، قرمز نیاز به بهبود.</div>
+        </section>
+      </div>
+
+      <section class="card" aria-labelledby="sessions-title">
+        <h2 id="sessions-title">جلسات خواب</h2>
+        <div class="row">
+          <span class="pill" id="currentStatus">وضعیت: آماده</span>
+          <span class="pill" id="storageInfo">LocalStorage v1</span>
+        </div>
+        <div class="list" id="sessionList" aria-live="polite"></div>
+      </section>
+
+      <div class="footer">
+        <span>ساخته شده برای عملکرد و زیبایی — فرانت‌اند خالص</span>
+        <span>نسخه طرح: 1.0.0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <header>
+        <h2 id="modalTitle" style="padding: 12px 16px; margin: 0;">ویرایش جلسه خواب</h2>
+      </header>
+      <div class="content">
+        <div class="field">
+          <div>
+            <label for="editDate">تاریخ (YYYY-MM-DD)</label>
+            <input id="editDate" type="date" />
+          </div>
+          <div>
+            <label for="editStart">شروع خواب (HH:MM)</label>
+            <input id="editStart" type="time" />
+          </div>
+        </div>
+        <div class="field">
+          <div>
+            <label for="editEnd">پایان خواب (HH:MM)</label>
+            <input id="editEnd" type="time" />
+          </div>
+          <div>
+            <label for="editNotes">یادداشت</label>
+            <input id="editNotes" type="text" placeholder="اختیاری" />
+          </div>
+        </div>
+        <p class="muted">اگر خواب از نیمه‌شب عبور کند، به‌صورت خودکار به روز بعد محاسبه می‌شود.</p>
+      </div>
+      <div class="actions">
+        <button id="closeModal">بستن</button>
+        <button class="primary" id="saveEdit">ذخیره</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==== Storage & Schema ====================================================
+    const SCHEMA_VERSION = 1;
+    const LS_KEY = 'sleep_tracker_v1';
+    const DEFAULT = {
+      version: SCHEMA_VERSION,
+      goals: {
+        sleepTime: '23:30',
+        wakeTime: '07:30',
+        durationHours: 7.5
+      },
+      sessions: [] // {id, start, end, notes}
+    };
+    const nowTs = () => Date.now();
+    const uuid = () => crypto?.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(16).slice(2) + Date.now();
+
+    function readStore() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return structuredClone(DEFAULT);
+        const data = JSON.parse(raw);
+        if (data.version !== SCHEMA_VERSION) {
+          // Future migrations here
+          data.version = SCHEMA_VERSION;
+        }
+        if (!Array.isArray(data.sessions)) data.sessions = [];
+        return data;
+      } catch (e) {
+        console.warn('Storage parse error, resetting.', e);
+        return structuredClone(DEFAULT);
+      }
+    }
+    function writeStore(data) {
+      localStorage.setItem(LS_KEY, JSON.stringify(data));
+    }
+
+    // ==== Time helpers ========================================================
+    const pad2 = n => String(n).padStart(2, '0');
+    const formatHM = d => `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    const formatDateISO = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    function parseTimeHM(hm) {
+      const [h, m] = hm.split(':').map(Number);
+      return {h, m};
+    }
+    function combineDateTime(dateStr, timeStr) {
+      const d = new Date(dateStr);
+      const {h, m} = parseTimeHM(timeStr);
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+    function humanDuration(ms) {
+      const h = Math.floor(ms / 3600000);
+      const m = Math.round((ms % 3600000) / 60000);
+      return `${h}س ${pad2(m)}د`;
+    }
+
+    // Handle sleep over midnight: if end < start → add 1 day to end
+    function normalizeSession(startISO, endISO) {
+      const start = new Date(startISO);
+      const end = new Date(endISO);
+      if (end < start) end.setDate(end.getDate() + 1);
+      return {start, end};
+    }
+
+    // ==== Scoring =============================================================
+    function diffMinutes(aDate, goalHM) {
+      const {h, m} = parseTimeHM(goalHM);
+      const goal = new Date(aDate);
+      goal.setHours(h, m, 0, 0);
+      // Find smallest circular diff within ±12h window
+      let diff = Math.abs((aDate - goal) / 60000);
+      diff = Math.min(diff, Math.abs(diff - 24*60)); // wrap around
+      return diff;
+    }
+    function scoreFromDiff(diffMin, maxMin) {
+      // 0 diff -> 100, diff >= maxMin -> 0, linear in between
+      const s = Math.max(0, 100 * (1 - (diffMin / maxMin)));
+      return Math.round(s);
+    }
+    function computeScore(session, goals) {
+      if (!session.end) return null;
+      const {start, end} = normalizeSession(session.start, session.end);
+      const durationMs = end - start;
+      const durationHours = durationMs / 3600000;
+
+      // Configurable thresholds
+      const MAX_TIME_DIFF_MIN = 120; // 2h window
+      const MAX_DURATION_DIFF_H = 2; // 2h window
+
+      // Duration score
+      const durationDiffH = Math.abs(durationHours - Number(goals.durationHours || 0));
+      const durationScore = scoreFromDiff(durationDiffH * 60, MAX_DURATION_DIFF_H * 60);
+
+      // Sleep time score (start vs goal)
+      const sleepTimeDiff = diffMinutes(start, goals.sleepTime);
+      const sleepTimeScore = scoreFromDiff(sleepTimeDiff, MAX_TIME_DIFF_MIN);
+
+      // Wake time score (end vs goal)
+      const wakeTimeDiff = diffMinutes(end, goals.wakeTime);
+      const wakeTimeScore = scoreFromDiff(wakeTimeDiff, MAX_TIME_DIFF_MIN);
+
+      // Weighted
+      const total = Math.round(
+        0.4 * durationScore +
+        0.3 * sleepTimeScore +
+        0.3 * wakeTimeScore
+      );
+
+      // Penalty for too short sleep
+      const penalty = durationHours < 4 ? 10 : 0;
+
+      return {
+        total: Math.max(0, total - penalty),
+        durationHours: Number(durationHours.toFixed(2)),
+        breakdown: {durationScore, sleepTimeScore, wakeTimeScore, penalty}
+      };
+    }
+
+    // ==== State & UI ==========================================================
+    const state = {
+      data: readStore(),
+      editingId: null,
+    };
+
+    // Elements
+    const els = {
+      sleepBtn: document.getElementById('sleepBtn'),
+      wakeBtn: document.getElementById('wakeBtn'),
+      editBtn: document.getElementById('editBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      goals: {
+        sleep: document.getElementById('goalSleepTime'),
+        wake: document.getElementById('goalWakeTime'),
+        duration: document.getElementById('goalDuration'),
+        save: document.getElementById('saveGoals'),
+        info: document.getElementById('goalsInfo'),
+      },
+      weekly: {
+        badge: document.getElementById('weeklyScoreBadge'),
+        score: document.getElementById('weeklyScore'),
+        range: document.getElementById('weeklyRange'),
+        chart: document.getElementById('weeklyChart'),
+      },
+      sessionsList: document.getElementById('sessionList'),
+      status: document.getElementById('currentStatus'),
+      storageInfo: document.getElementById('storageInfo'),
+      modalBackdrop: document.getElementById('modalBackdrop'),
+      modal: {
+        date: document.getElementById('editDate'),
+        start: document.getElementById('editStart'),
+        end: document.getElementById('editEnd'),
+        notes: document.getElementById('editNotes'),
+        save: document.getElementById('saveEdit'),
+        close: document.getElementById('closeModal'),
+      }
+    };
+
+    function setStatus(text) { els.status.textContent = 'وضعیت: ' + text; }
+
+    // Render goals
+    function renderGoals() {
+      const g = state.data.goals;
+      els.goals.sleep.value = g.sleepTime;
+      els.goals.wake.value = g.wakeTime;
+      els.goals.duration.value = g.durationHours;
+      els.goals.info.textContent =
+        `هدف‌ها: خواب ${g.sleepTime} / بیداری ${g.wakeTime} / مدت ${g.durationHours}س`;
+    }
+
+    // Save goals
+    els.goals.save.addEventListener('click', () => {
+      const sleepTime = els.goals.sleep.value || '23:30';
+      const wakeTime = els.goals.wake.value || '07:30';
+      const durationHours = Number(els.goals.duration.value || 7.5);
+      state.data.goals = { sleepTime, wakeTime, durationHours };
+      writeStore(state.data);
+      renderGoals();
+      updateAll();
+      setStatus('هدف‌ها ذخیره شد');
+    });
+
+    // Sleep/awake
+    function getOpenSession() {
+      return state.data.sessions.find(s => !s.end);
+    }
+    els.sleepBtn.addEventListener('click', () => {
+      const open = getOpenSession();
+      if (open) {
+        setStatus('یک جلسه باز دارید — ابتدا «بیدار شدم» را بزنید یا آن را ویرایش کنید.');
+        return;
+      }
+      const id = uuid();
+      const start = new Date(nowTs()).toISOString();
+      state.data.sessions.unshift({ id, start, end: null, notes: '' });
+      writeStore(state.data);
+      updateAll();
+      setStatus('خواب شروع شد');
+    });
+    els.wakeBtn.addEventListener('click', () => {
+      const open = getOpenSession();
+      if (!open) {
+        setStatus('جلسه بازی وجود ندارد. ابتدا «خوابیدم» را بزنید.');
+        return;
+      }
+      open.end = new Date(nowTs()).toISOString();
+      writeStore(state.data);
+      updateAll();
+      setStatus('خواب پایان یافت');
+    });
+
+    // Reset (confirm)
+    els.resetBtn.addEventListener('click', () => {
+      if (!confirm('همه داده‌ها پاک شوند؟ این کار برگشت‌پذیر نیست.')) return;
+      state.data = structuredClone(DEFAULT);
+      writeStore(state.data);
+      updateAll();
+      setStatus('داده‌ها بازنشانی شد');
+    });
+
+    // Sessions list render
+    function renderSessions() {
+      const container = els.sessionsList;
+      container.innerHTML = '';
+      if (state.data.sessions.length === 0) {
+        container.innerHTML = '<div class="muted">هنوز جلسه‌ای ثبت نشده.</div>';
+        return;
+      }
+      for (const s of state.data.sessions) {
+        const hasEnd = !!s.end;
+        const start = new Date(s.start);
+        const end = hasEnd ? new Date(s.end) : null;
+        const durationMs = hasEnd ? (normalizeSession(s.start, s.end).end - normalizeSession(s.start, s.end).start) : 0;
+        const score = hasEnd ? computeScore(s, state.data.goals) : null;
+
+        const item = document.createElement('div');
+        item.className = 'item';
+
+        const left = document.createElement('div');
+        const title = document.createElement('div');
+        title.innerHTML = `<strong>${formatDateISO(start)}</strong> — شروع ${formatHM(start)}${hasEnd ? ' / پایان ' + formatHM(end) : ' / در حال خواب...'}`;
+        left.appendChild(title);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = hasEnd ? `مدت: ${humanDuration(durationMs)}${s.notes ? ' — ' + s.notes : ''}` : (s.notes ? s.notes : '—');
+        left.appendChild(meta);
+
+        const right = document.createElement('div');
+        right.className = 'row';
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'ویرایش';
+        editBtn.addEventListener('click', () => openEditModal(s.id));
+        right.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'حذف';
+        delBtn.className = 'danger';
+        delBtn.addEventListener('click', () => {
+          if (!confirm('این جلسه حذف شود؟')) return;
+          state.data.sessions = state.data.sessions.filter(x => x.id !== s.id);
+          writeStore(state.data);
+          updateAll();
+          setStatus('جلسه حذف شد');
+        });
+        right.appendChild(delBtn);
+
+        if (score) {
+          const badge = document.createElement('div');
+          badge.className = 'score-badge ' + (score.total >= 75 ? 'score-good' : score.total >= 50 ? 'score-mid' : 'score-bad');
+          badge.innerHTML = `<span>نمره</span><strong>${score.total}</strong>`;
+          right.appendChild(badge);
+        } else {
+          const badge = document.createElement('span');
+          badge.className = 'pill';
+          badge.textContent = 'در حال خواب';
+          right.appendChild(badge);
+        }
+
+        item.appendChild(left);
+        item.appendChild(right);
+        container.appendChild(item);
+      }
+    }
+
+    // Weekly report
+    function startOfWeek(d) {
+      const x = new Date(d);
+      const day = x.getDay(); // 0 Sun .. 6 Sat
+      const diff = (day + 6) % 7; // make Monday start
+      x.setDate(x.getDate() - diff);
+      x.setHours(0,0,0,0);
+      return x;
+    }
+    function endOfWeek(d) {
+      const x = startOfWeek(d);
+      x.setDate(x.getDate() + 6);
+      x.setHours(23,59,59,999);
+      return x;
+    }
+    function weeklySessions(sessions, refDate = new Date()) {
+      const start = startOfWeek(refDate), end = endOfWeek(refDate);
+      return sessions.filter(s => {
+        if (!s.end) return false;
+        const e = new Date(s.end);
+        return e >= start && e <= end;
+      });
+    }
+    function renderWeekly() {
+      const week = weeklySessions(state.data.sessions);
+      const scores = week.map(s => computeScore(s, state.data.goals)?.total).filter(Boolean);
+      const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+      els.weekly.score.textContent = avg ?? '—';
+      els.weekly.badge.className = 'score-badge ' + (avg == null ? 'score-mid' : avg >= 75 ? 'score-good' : avg >= 50 ? 'score-mid' : 'score-bad');
+
+      const s = startOfWeek(new Date());
+      const e = endOfWeek(new Date());
+      els.weekly.range.textContent = `${formatDateISO(s)} تا ${formatDateISO(e)}`;
+
+      // chart: 7 bars for Mon..Sun
+      els.weekly.chart.innerHTML = '';
+      for (let i=0;i<7;i++) {
+        const day = new Date(s);
+        day.setDate(s.getDate()+i);
+        const dayScores = week
+          .filter(sess => {
+            const end = new Date(sess.end);
+            return end.getFullYear()===day.getFullYear() &&
+              end.getMonth()===day.getMonth() &&
+              end.getDate()===day.getDate();
+          })
+          .map(sess => computeScore(sess, state.data.goals).total);
+        const top = dayScores.length ? Math.max(...dayScores) : 0;
+
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        const fill = document.createElement('div');
+        fill.className = 'fill';
+        fill.style.height = (top/100*100) + '%';
+        fill.style.background = top >= 75 ? 'linear-gradient(180deg,#45c67a,#58d68d)' :
+                              top >= 50 ? 'linear-gradient(180deg,#f0a54b,#f5b041)' :
+                              'linear-gradient(180deg,#ff5c5c,#ff6b6b)';
+        bar.appendChild(fill);
+
+        const label = document.createElement('div');
+        const weekDaysFa = ['د','س','چ','پ','ج','ش','ی'];
+        label.className = 'label';
+        label.textContent = weekDaysFa[i];
+        bar.appendChild(label);
+
+        els.weekly.chart.appendChild(bar);
+      }
+    }
+
+    // Edit modal
+    function openEditModal(id) {
+      const sess = state.data.sessions.find(s => s.id === id) || getOpenSession();
+      if (!sess) { setStatus('جلسه‌ای برای ویرایش یافت نشد.'); return; }
+      state.editingId = sess.id;
+
+      const start = new Date(sess.start);
+      const end = sess.end ? new Date(sess.end) : new Date(start.getTime() + 7.5*3600000);
+
+      els.modal.date.value = formatDateISO(start);
+      els.modal.start.value = formatHM(start);
+      els.modal.end.value = formatHM(end);
+      els.modal.notes.value = sess.notes || '';
+
+      els.modalBackdrop.style.display = 'grid';
+    }
+    els.editBtn.addEventListener('click', () => openEditModal(getOpenSession()?.id));
+    els.modal.close.addEventListener('click', () => { els.modalBackdrop.style.display = 'none'; state.editingId = null; });
+    els.modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === els.modalBackdrop) { els.modalBackdrop.style.display = 'none'; state.editingId = null; }
+    });
+    els.modal.save.addEventListener('click', () => {
+      const id = state.editingId;
+      if (!id) { setStatus('جلسه‌ای برای ذخیره یافت نشد.'); return; }
+      const dateStr = els.modal.date.value;
+      const startHM = els.modal.start.value;
+      const endHM = els.modal.end.value;
+
+      if (!dateStr || !startHM || !endHM) {
+        setStatus('لطفاً تاریخ و زمان‌ها را تکمیل کنید.');
+        return;
+      }
+
+      const start = combineDateTime(dateStr, startHM);
+      let end = combineDateTime(dateStr, endHM);
+      if (end < start) end.setDate(end.getDate() + 1);
+
+      // min 10 minutes sanity
+      if ((end - start) < 10 * 60000) {
+        setStatus('مدت خواب باید حداقل 10 دقیقه باشد.');
+        return;
+      }
+
+      const sess = state.data.sessions.find(s => s.id === id);
+      if (!sess) { setStatus('جلسه پیدا نشد.'); return; }
+      sess.start = start.toISOString();
+      sess.end = end.toISOString();
+      sess.notes = els.modal.notes.value || '';
+
+      writeStore(state.data);
+      els.modalBackdrop.style.display = 'none';
+      state.editingId = null;
+      updateAll();
+      setStatus('ویرایش ذخیره شد');
+    });
+
+    // Storage info
+    function renderStorageInfo() {
+      const bytes = new Blob([JSON.stringify(state.data)]).size;
+      const kb = (bytes/1024).toFixed(1);
+      els.storageInfo.textContent = `LocalStorage v${SCHEMA_VERSION} — ${kb}KB`;
+    }
+
+    // Update all views
+    function updateAll() {
+      renderGoals();
+      renderWeekly();
+      renderSessions();
+      renderStorageInfo();
+    }
+
+    // Init
+    (function init(){
+      renderGoals();
+      updateAll();
+      setStatus('آماده');
+      // Accessibility helpers
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && els.modalBackdrop.style.display === 'grid') {
+          els.modalBackdrop.style.display = 'none';
+          state.editingId = null;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
