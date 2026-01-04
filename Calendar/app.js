@@ -2,7 +2,6 @@
 const state = {
   theme: localStorage.getItem('theme') || 'light',
   pref24h: JSON.parse(localStorage.getItem('pref24h') || 'false'),
-  weekStartFri: JSON.parse(localStorage.getItem('weekStartFri') || 'false'),
   // تاریخ انتخاب‌شده بر اساس میلادی (برای سازگاری Intl)
   selectedDate: new Date(),
   // ماه/سال بر اساس شمسی
@@ -28,8 +27,8 @@ const fmtJalaliYMD = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
 });
 const fmtJalaliWeekday = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { weekday: 'long' });
 
-// ابزار: فرمت تاریخ میلادی
-const fmtGregorianYMD = new Intl.DateTimeFormat('fa-IR', {
+// ابزار: فرمت تاریخ میلادی (اکیداً gregorian)
+const fmtGregorianYMD = new Intl.DateTimeFormat('fa-IR-u-ca-gregory', {
   year: 'numeric', month: '2-digit', day: '2-digit'
 });
 
@@ -51,36 +50,58 @@ function getJalaliParts(date) {
   };
 }
 
-// ابزار: ساخت Date میلادی از اجزای شمسی با استفاده از تقویم شمسی در Intl
+// ابزار: ساخت Date میلادی از اجزای شمسی با استفاده از تقویم شمسی در Intl (روش تجربی)
 function jalaliToGregorianDate(jYear, jMonth, jDay) {
-  // Hack: ساخت رشته تاریخ شمسی و پارس به میلادی با Intl (fallback با set to noon)
-  // چون Intl مستقیماً Date را نمی‌سازد، از یک راه‌حل تجربی بهره می‌بریم:
-  // ابتدا تاریخ امروز را گرفته و اختلاف را با گام‌های روز محاسبه می‌کنیم.
-  // برای دقت بهتر، از کتابخانه اختصاصی می‌توان استفاده کرد؛ فعلاً این نسخه ساده است.
   const today = new Date();
   let probe = new Date(today);
-  // حرکت تا رسیدن به سال و ماه و روز مورد نظر (حداکثر چند هزار گام در بدترین حالت)
-  // برای کار واقعی بهتر است از الگوریتم دقیق جلالی استفاده شود.
   const targetStr = `${jYear}/${String(jMonth).padStart(2,'0')}/${String(jDay).padStart(2,'0')}`;
-  // جست‌وجوی دوجهته با محدودیت
   const limit = 20000;
   for (let i = 0; i < limit; i++) {
     const ymd = fmtJalaliYMD.format(probe).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-    // تبدیل اعداد فارسی به انگلیسی
     const normalized = ymd.replace(/[^\d/]/g,'');
     if (normalized === targetStr) return probe;
-    // حرکت ±
     probe.setDate(probe.getDate() + (normalized < targetStr ? 1 : -1));
   }
-  // اگر پیدا نشد، برگرداندن امروز
   return today;
 }
+
+// آیکون‌های تم
+const iconNight = `
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
+  <g clip-path="url(#clip0_429_11017)">
+    <path d="M20.9955 11.7115L22.2448 11.6721C22.2326 11.2847 22.0414 10.9249 21.7272 10.698C21.413 10.4711 21.0113 10.4029 20.6397 10.5132L20.9955 11.7115ZM12.2885 3.00454L13.4868 3.36028C13.5971 2.98873 13.5289 2.58703 13.302 2.2728C13.0751 1.95857 12.7153 1.76736 12.3279 1.75516L12.2885 3.00454ZM20.6397 10.5132C20.1216 10.667 19.5716 10.75 19 10.75V13.25C19.815 13.25 20.6046 13.1314 21.3512 12.9098L20.6397 10.5132ZM19 10.75C15.8244 10.75 13.25 8.17564 13.25 5H10.75C10.75 9.55635 14.4437 13.25 19 13.25V10.75ZM13.25 5C13.25 4.42841 13.333 3.87841 13.4868 3.36028L11.0902 2.64879C10.8686 3.39542 10.75 4.18496 10.75 5H13.25ZM12 4.25C12.0834 4.25 12.1665 4.25131 12.2492 4.25392L12.3279 1.75516C12.219 1.75173 12.1097 1.75 12 1.75V4.25ZM4.25 12C4.25 7.71979 7.71979 4.25 12 4.25V1.75C6.33908 1.75 1.75 6.33908 1.75 12H4.25ZM12 19.75C7.71979 19.75 4.25 16.2802 4.25 12H1.75C1.75 17.6609 6.33908 22.25 12 22.25V19.75ZM19.75 12C19.75 16.2802 16.2802 19.75 12 19.75V22.25C17.6609 22.25 22.25 17.6609 22.25 12H19.75ZM19.7461 11.7508C19.7487 11.8335 19.75 11.9166 19.75 12H22.25C22.25 11.8903 22.2483 11.781 22.2448 11.6721L19.7461 11.7508Z" fill="#000000"></path>
+  </g>
+  <defs><clipPath id="clip0_429_11017"><rect width="24" height="24" fill="white"></rect></clipPath></defs>
+</svg>
+`;
+const iconDay = `
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000" class="icon">
+  <g clip-path="url(#clip0_429_11039)">
+    <circle cx="12" cy="12" r="4" stroke="#000000" stroke-width="2.5" stroke-linejoin="round"></circle>
+    <path d="M20 12H21" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M3 12H4" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M12 20L12 21" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M12 3L12 4" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M17.6569 17.6569L18.364 18.364" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M5.63605 5.63604L6.34315 6.34315" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M6.34314 17.6569L5.63603 18.364" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+    <path d="M18.364 5.63604L17.6568 6.34315" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path>
+  </g>
+  <defs><clipPath id="clip0_429_11039"><rect width="24" height="24" fill="white"></rect></clipPath></defs>
+</svg>
+`;
 
 // حالت تاریک/روشن
 function applyTheme() {
   const root = document.documentElement;
   if (state.theme === 'dark') root.classList.add('dark');
   else root.classList.remove('dark');
+
+  // آیکون دکمه تم بر اساس حالت فعلی:
+  // اگر حالت فعلی light (روز) است، دکمه باید آیکون شب شدن را نشان دهد.
+  // اگر حالت فعلی dark (شب) است، دکمه باید آیکون روز شدن را نشان دهد.
+  const iconContainer = document.getElementById('themeIcon');
+  iconContainer.innerHTML = state.theme === 'dark' ? iconDay : iconNight;
 }
 
 function toggleTheme() {
@@ -96,7 +117,7 @@ function initJalaliMonthYearFromDate(date) {
   state.jalaliYear = j.year;
 }
 
-// پر کردن کنترل‌های ماه/سال
+// پر کردن کنترل‌های ماه/سال (همگام با state)
 function populateMonthYearControls() {
   const monthSelect = document.getElementById('monthSelect');
   monthSelect.innerHTML = '';
@@ -104,9 +125,9 @@ function populateMonthYearControls() {
     const opt = document.createElement('option');
     opt.value = String(i);
     opt.textContent = m;
-    if (i === state.jalaliMonthIndex) opt.selected = true;
     monthSelect.appendChild(opt);
   });
+  monthSelect.value = String(state.jalaliMonthIndex);
 
   const yearInput = document.getElementById('yearInput');
   yearInput.value = state.jalaliYear;
@@ -116,11 +137,8 @@ function populateMonthYearControls() {
 
 // محاسبه تعداد روزهای هر ماه شمسی (ساده‌سازی)
 function daysInJalaliMonth(year, monthIndex) {
-  // 0..5 => 31 روز، 6..10 => 30 روز، 11 => 29 یا 30 بسته به کبیسه
   if (monthIndex <= 5) return 31;
   if (monthIndex <= 10) return 30;
-  // اسفند: تخمینی؛ برای دقت کامل نیاز به الگوریتم کبیسه جلالی است.
-  // از Intl برای بررسی وجود 30 اسفند استفاده می‌کنیم:
   const d30 = jalaliToGregorianDate(year, 12, 30);
   const jp = getJalaliParts(d30);
   return (jp.month === 12 && jp.day === 30) ? 30 : 29;
@@ -130,7 +148,6 @@ function daysInJalaliMonth(year, monthIndex) {
 function jalaliMonthStartWeekday(year, monthIndex) {
   const gDate = jalaliToGregorianDate(year, monthIndex + 1, 1);
   const weekdayName = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { weekday: 'long' }).format(gDate);
-  // نگاشت به ایندکس 0..6 با ترتیب شنبه..جمعه
   const idx = weekdays.indexOf(weekdayName);
   return idx === -1 ? 0 : idx;
 }
@@ -143,23 +160,12 @@ function renderCalendar() {
   const year = state.jalaliYear;
   const monthIndex = state.jalaliMonthIndex;
   const days = daysInJalaliMonth(year, monthIndex);
-  let startIdx = jalaliMonthStartWeekday(year, monthIndex);
-
-  // تنظیم شروع هفته اگر کاربر خواست جمعه اول باشد
-  let headers = [...weekdays];
-  if (state.weekStartFri) {
-    const shift = headers.pop(); // جمعه
-    headers.unshift(shift);
-    // تبدیل ایندکس شروع نسبت به جمعه‌محور
-    startIdx = (startIdx + 1) % 7;
-    // نکته: برای سادگی، تیتر جدول از HTML ثابت می‌آید؛ می‌توانید تیتربندی داینامیک کنید.
-  }
+  const startIdx = jalaliMonthStartWeekday(year, monthIndex);
 
   // امروز برای علامت‌گذاری
   const todayJ = getJalaliParts(new Date());
   const selectedJ = getJalaliParts(state.selectedDate);
 
-  // 6 ردیف * 7 ستون (حداکثر نیاز)
   let day = 1;
   for (let r = 0; r < 6; r++) {
     const tr = document.createElement('tr');
@@ -190,6 +196,8 @@ function renderCalendar() {
 
         td.addEventListener('click', () => {
           state.selectedDate = gDate;
+          initJalaliMonthYearFromDate(state.selectedDate); // همگام‌سازی ماه/سال
+          populateMonthYearControls();
           updateSelectedHighlight();
           renderDayDetails();
         });
@@ -214,10 +222,8 @@ function updateSelectedHighlight() {
 // نمایش تاریخ و زمان جاری
 function tickTime() {
   const now = new Date();
-  // تاریخ شمسی: ۱۴۰۴/۱۰/۱۴
   document.getElementById('currentDate').textContent = fmtJalaliYMD.format(now);
 
-  // زمان: ۲:۱۸ (بزرگ‌تر از تاریخ)
   let hours = now.getHours();
   let minutes = now.getMinutes();
   let displayHours = hours;
@@ -234,10 +240,10 @@ function tickTime() {
 function renderDayDetails() {
   const d = state.selectedDate;
 
-  const jWeekday = fmtJalaliWeekday.format(d); // «شنبه»، ...
-  const jYMD = fmtJalaliYMD.format(d);         // ۱۴۰۴/۱۰/۱۴
-  const gYMD = fmtGregorianYMD.format(d);      // 2026/01/04 به فارسی‌دیجیت
-  const iYMD = fmtIslamicYMD.format(d);        // 1447/06/23 (تقریبی بسته به تقویم)
+  const jWeekday = fmtJalaliWeekday.format(d);
+  const jYMD = fmtJalaliYMD.format(d);
+  const gYMD = fmtGregorianYMD.format(d); // تقویم میلادی، با اعداد فارسی
+  const iYMD = fmtIslamicYMD.format(d);
 
   document.getElementById('dayHeadline').textContent = `${jWeekday} — ${jYMD}`;
   document.getElementById('jalaliDate').textContent = jYMD;
@@ -251,16 +257,11 @@ function renderDayDetails() {
 async function fetchEventsForDate(date) {
   const list = document.getElementById('eventsList');
   list.innerHTML = '';
-  // رشته تاریخ شمسی برای API
   const j = getJalaliParts(date);
   const jalaliStr = `${j.year}/${String(j.month).padStart(2,'0')}/${String(j.day).padStart(2,'0')}`;
 
   try {
-    // جایگزین کنید با API واقعی:
-    // const resp = await fetch(`https://example.com/api/events?jalali=${encodeURIComponent(jalaliStr)}`);
-    // const events = await resp.json();
-
-    // موقت: داده آزمایشی
+    // TODO: اتصال به API واقعی مناسبت‌ها
     const events = sampleEvents(jalaliStr);
 
     if (!events || events.length === 0) {
@@ -284,7 +285,6 @@ async function fetchEventsForDate(date) {
 
 // داده آزمایشی (برای توسعه)
 function sampleEvents(jalaliStr) {
-  // نمونه ساده؛ در اتصال واقعی، از پاسخ API استفاده کنید.
   return jalaliStr.endsWith('/01')
     ? [{ title: 'آغاز ماه شمسی' }]
     : [];
@@ -292,7 +292,7 @@ function sampleEvents(jalaliStr) {
 
 // رویدادها و مقداردهی
 function init() {
-  // تم
+  // بارگذاری تم و آیکون
   applyTheme();
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
@@ -302,15 +302,11 @@ function init() {
   settingsDialog.addEventListener('close', () => {
     // ذخیره تنظیمات
     state.pref24h = document.getElementById('pref24h').checked;
-    state.weekStartFri = document.getElementById('prefWeekStartFri').checked;
     localStorage.setItem('pref24h', JSON.stringify(state.pref24h));
-    localStorage.setItem('weekStartFri', JSON.stringify(state.weekStartFri));
-    renderCalendar();
     renderDayDetails();
+    tickTime();
   });
-  // مقدار اولیه سوییچ‌ها
   document.getElementById('pref24h').checked = state.pref24h;
-  document.getElementById('prefWeekStartFri').checked = state.weekStartFri;
 
   // تاریخ انتخاب‌شده = امروز
   state.selectedDate = new Date();
@@ -322,8 +318,8 @@ function init() {
   // تغییر ماه
   document.getElementById('monthSelect').addEventListener('change', (e) => {
     state.jalaliMonthIndex = parseInt(e.target.value, 10);
-    // هم‌تراز کردن selectedDate با ۱ ماه جدید
     state.selectedDate = jalaliToGregorianDate(state.jalaliYear, state.jalaliMonthIndex + 1, 1);
+    populateMonthYearControls();
     renderCalendar();
     renderDayDetails();
   });
@@ -332,6 +328,7 @@ function init() {
   document.getElementById('yearInput').addEventListener('change', (e) => {
     state.jalaliYear = parseInt(e.target.value, 10);
     state.selectedDate = jalaliToGregorianDate(state.jalaliYear, state.jalaliMonthIndex + 1, 1);
+    populateMonthYearControls();
     renderCalendar();
     renderDayDetails();
   });

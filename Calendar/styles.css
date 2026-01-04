@@ -17,11 +17,12 @@
   --shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
 
-* { box-sizing: border-box; }
+/* فونت فقط Vazir برای کل سایت */
+* { box-sizing: border-box; font-family: Vazir; }
+
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: Vazir, sans-serif;
   background: var(--bg);
   color: var(--fg);
 }
@@ -58,13 +59,14 @@ body {
   cursor: pointer;
   display: grid;
   place-items: center;
-  transition: background .2s, border-color .2s;
+  transition: background .2s, border-color .2s, transform .1s;
 }
 .icon-btn:hover, .nav-btn:hover {
   background: var(--card);
   border-color: var(--accent);
 }
-.icon { width: 22px; height: 22px; fill: currentColor; }
+.icon-btn:active, .nav-btn:active { transform: scale(0.98); }
+.icon { width: 30px;}
 
 .container {
   max-width: 960px;
@@ -91,6 +93,7 @@ body {
   color: var(--fg);
 }
 
+/* کنترل‌های ماه/سال */
 .month-controls .controls {
   display: grid;
   grid-template-columns: 40px 1fr 120px 40px;
@@ -109,10 +112,17 @@ body {
 }
 #monthSelect:focus, .year-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,165,0,0.25);
 }
 
+/* جدول تقویم */
+.calendar-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .calendar-table {
   width: 100%;
+  min-width: 560px; /* برای موبایل اسکرول‌پذیر شود */
   border-collapse: collapse;
   border: 1px solid var(--border);
   background: var(--card);
@@ -120,15 +130,18 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow);
 }
+.calendar-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(255,165,0,0.12);
+  color: var(--fg);
+  font-weight: 700;
+}
 .calendar-table th, .calendar-table td {
   border: 1px solid var(--border);
   text-align: center;
   padding: 12px 6px;
-}
-.calendar-table thead th {
-  background: rgba(255,165,0,0.12);
-  color: var(--fg);
-  font-weight: 700;
 }
 .calendar-table td {
   height: 64px;
@@ -151,6 +164,7 @@ body {
   background: rgba(255,165,0,0.16);
 }
 
+/* جزئیات روز */
 .day-details {
   margin: 20px 0;
   padding: 16px;
@@ -185,6 +199,7 @@ body {
   font-weight: 700;
 }
 
+/* مناسبت‌ها */
 .events-title {
   font-size: 14px;
   color: var(--muted);
@@ -211,6 +226,7 @@ body {
   background: var(--card);
   color: var(--fg);
   box-shadow: var(--shadow);
+  max-width: 420px;
 }
 .settings-title { margin: 0 0 12px; font-size: 18px; font-weight: 800; }
 .settings-group { margin: 10px 0; display: flex; gap: 8px; align-items: center; }
@@ -229,4 +245,52 @@ body {
   border-color: var(--accent);
   background: var(--accent);
   color: #1f1f1f;
+}
+
+/* ریسپانسیو کامل موبایل */
+@media (max-width: 640px) {
+  .app-header {
+    grid-template-columns: 36px 1fr 36px;
+    padding: 10px 12px;
+  }
+  .app-title { font-size: 18px; }
+  .icon-btn, .nav-btn { width: 34px; height: 34px; }
+
+  .date-time {
+    margin: 10px 0 14px;
+  }
+  .current-date { font-size: 18px; }
+  .current-time { font-size: 26px; }
+
+  .month-controls .controls {
+    grid-template-columns: 34px 1fr 100px 34px;
+    gap: 6px;
+    margin: 6px 0 12px;
+  }
+  #monthSelect, .year-input {
+    height: 34px;
+    border-radius: 10px;
+    padding: 0 8px;
+  }
+
+  .calendar-table {
+    min-width: 520px;
+  }
+  .calendar-table th, .calendar-table td {
+    padding: 10px 4px;
+  }
+  .calendar-table td { height: 56px; }
+  .calendar-table td .day { font-size: 16px; }
+
+  .day-details {
+    margin: 14px 0;
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .triple-dates {
+    grid-template-columns: 1fr;
+  }
+  .date-box .value { font-size: 15px; }
+
+  .events-list li { padding: 8px; }
 }
