@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تقویم ایتا | Eitaa Calendar</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <!-- فونت وزیر (می‌توانید بعداً لوکال کنید) -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- هدر -->
+  <header class="app-header">
+    <button id="themeToggle" class="icon-btn" aria-label="تغییر حالت روشن/تاریک" title="حالت تاریک/روشن">
+      <!-- آیکون خورشید/ماه با یک SVG -->
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 4a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V5a1 1 0 0 1 1-1zm0 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm8-6a1 1 0 0 1 1 1 1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1zM4 12a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2h1zm13.66 6.24a1 1 0 0 1 1.41 0l.7.7a1 1 0 1 1-1.41 1.41l-.7-.7a1 1 0 0 1 0-1.41zM4.23 5.66a1 1 0 0 1 1.41 0l.7.7A1 1 0 0 1 5 8.47l-.7-.7a1 1 0 0 1 0-1.41zm0 12.68a1 1 0 0 1 1.41 0l.7.7A1 1 0 1 1 4.94 21.45l-.7-.7a1 1 0 0 1 0-1.41zM18.59 6.36a1 1 0 0 1 1.41 0l.7.7A1 1 0 1 1 19.28 8.47l-.7-.7a1 1 0 0 1 0-1.41z"/>
+      </svg>
+    </button>
+
+    <h1 class="app-title">تقویم ایتا</h1>
+
+    <button id="settingsBtn" class="icon-btn" aria-label="تنظیمات" title="تنظیمات">
+      <!-- آیکون چرخ‌دنده -->
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm9.4 4a7.4 7.4 0 0 0-.29-1.94l2.03-1.58-2-3.46-2.45.97a7.4 7.4 0 0 0-1.68-.98l-.37-2.6h-4l-.37 2.6a7.4 7.4 0 0 0-1.68.98L5.86 5.02l-2 3.46 2.03 1.58c-.17.63-.26 1.28-.29 1.94l-2.33 1.81 1.3 3.8 2.83-.18c.5.58 1.08 1.1 1.71 1.53l.12 2.86h4l.12-2.86c.63-.43 1.21-.95 1.71-1.53l2.83.18 1.3-3.8L21.4 12z"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- صفحه اصلی -->
+  <main class="container">
+    <!-- تاریخ و زمان -->
+    <section class="date-time">
+      <div id="currentDate" class="current-date" aria-live="polite"></div>
+      <div id="currentTime" class="current-time" aria-live="polite"></div>
+    </section>
+
+    <!-- انتخاب ماه و سال -->
+    <section class="month-controls">
+      <div class="controls">
+        <button id="prevMonth" class="nav-btn" aria-label="ماه قبل" title="ماه قبل">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+
+        <select id="monthSelect" aria-label="انتخاب ماه"></select>
+
+        <input id="yearInput" type="number" aria-label="سال" class="year-input"/>
+
+        <button id="nextMonth" class="nav-btn" aria-label="ماه بعد" title="ماه بعد">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- جدول تقویم -->
+    <section class="calendar">
+      <table class="calendar-table">
+        <thead>
+          <tr>
+            <th>شنبه</th>
+            <th>یکشنبه</th>
+            <th>دوشنبه</th>
+            <th>سه‌شنبه</th>
+            <th>چهارشنبه</th>
+            <th>پنجشنبه</th>
+            <th>جمعه</th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody">
+          <!-- سلول‌های روزها به‌صورت داینامیک -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- جزئیات روز -->
+    <section class="day-details">
+      <div id="dayHeadline" class="day-headline"></div>
+      <div class="triple-dates">
+        <div class="date-box">
+          <div class="label">شمسی</div>
+          <div id="jalaliDate" class="value"></div>
+        </div>
+        <div class="date-box">
+          <div class="label">قمری</div>
+          <div id="islamicDate" class="value"></div>
+        </div>
+        <div class="date-box">
+          <div class="label">میلادی</div>
+          <div id="gregorianDate" class="value"></div>
+        </div>
+      </div>
+      <div class="events">
+        <div class="events-title">مناسبت‌های امروز</div>
+        <ul id="eventsList" class="events-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- مودال تنظیمات -->
+  <dialog id="settingsDialog" class="settings-dialog">
+    <form method="dialog">
+      <h2 class="settings-title">تنظیمات</h2>
+      <div class="settings-group">
+        <label class="switch">
+          <input type="checkbox" id="pref24h" />
+          <span>نمایش ساعت ۲۴ ساعته</span>
+        </label>
+      </div>
+      <div class="settings-group">
+        <label class="switch">
+          <input type="checkbox" id="prefWeekStartFri" />
+          <span>شروع هفته از جمعه</span>
+        </label>
+      </div>
+      <div class="settings-actions">
+        <button class="btn" value="cancel">بستن</button>
+        <button class="btn primary" value="default">ذخیره</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
